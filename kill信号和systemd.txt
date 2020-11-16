@@ -1,0 +1,78 @@
+kill -l
+列出所有信号名称（Print a list of signal names. These are found in /usr/include/linux/signal.h）。只有第9种信号(SIGKILL)才可以无条件终止进程，其他信号进程都有权利忽略。
+
+killall service_name
+杀死同一进程组内的所有进程，允许指定要终止的进程的名称，而非pid
+
+kill -s HUP pid
+让 Linux 缓和的执行进程关闭，然后重启。在对配置文件修改后需要重启进程时可发送此信号。不推荐，可能导致服务无法清除临时文件
+
+kill -s QUIT pid
+停止命令
+ExecStop=/bin/kill -s QUIT $PID
+QUIT和TERM类似----不同的是:它会生成内存转储
+
+kill -s TERM pid
+友好告诉进程退出，进程先保存好数据，再正常退出。
+给父进程发送一个 TERM 信号，试图杀死它和它的子进程。
+请求彻底终止某项执行操作.它期望接收进程清除自给的状态并退出
+
+kill -9 pid
+这个强大和危险的命令迫使进程在运行时突然终止，进程在结束后不能自我清理。
+危害
+导致系统资源无法正常释放，一般不推荐使用，除非其他办法都无效。
+
+-------------------------------------------------------------------------
+
+Systemd
+文件结构示例
+[Unit]
+Description=Hello World
+After=docker.service
+Requires=docker.service
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill busybox1
+ExecStartPre=-/usr/bin/docker rm busybox1
+ExecStartPre=/usr/bin/docker pull busybox
+ExecStart=/usr/bin/docker run --name busybox1 busybox /bin/ sh -c "while true; do echo Hello World; sleep 1; done"
+ExecStop="/usr/bin/docker stop busybox1"
+ExecStopPost="/usr/bin/docker rm busybox1"
+[Install]
+WantedBy=multi-user.target
+
+如下所示，Systemd 服务的 Unit 文件可以分为三个配置区段：
+Unit 和 Install 段：所有 Unit 文件通用，用于配置服务（或其它系统资源）的描述、依赖和随系统启动的方式
+Service 段：服务（Service）类型的 Unit 文件（后缀为 .service）特有的，用于定义服务的具体管理和操作方法
+
+Unit 段
+Description：描述这个 Unit 文件的信息
+Documentation：指定服务的文档，可以是一个或多个文档的 URL 路径
+Requires：依赖的其它 Unit 列表，列在其中的 Unit 模板会在这个服务启动时的同时被启动。并且，如果其中任意一个服务启动失败，这个服务也会被终止
+Wants：与 Requires 相似，但只是在被配置的这个 Unit 启动时，触发启动列出的每个 Unit 模块，而不去考虑这些模板启动是否成功
+After：与 Requires 相似，但是在后面列出的所有模块全部启动完成以后，才会启动当前的服务
+Before：与 After 相反，在启动指定的任务一个模块之间，都会首先确证当前服务已经运行
+Binds To：与 Requires 相似，失败时失败，成功时成功，但是在这些模板中有任意一个出现意外结束或重启时，这个服务也会跟着终止或重启
+
+Install 段
+WantedBy：和 Unit 段的 Wants 作用相似，只有后面列出的不是服务所依赖的模块，而是依赖当前服务的模块。它的值是一个或多个 Target，当前 Unit 激活时（enable）符号链接会放入 /etc/systemd/system 目录下面以 <Target 名> + .wants 后缀构成的子目录中，如 “/etc/systemd/system/multi-user.target.wants/“
+RequiredBy：和 Unit 段的 Wants 作用相似，只有后面列出的不是服务所依赖的模块，而是依赖当前服务的模块。它的值是一个或多个 Target，当前 Unit 激活时，符号链接会放入/etc/systemd/system 目录下面以 <Target 名> + .required 后缀构成的子目录中
+
+Service 段
+用来 Service 的配置，只有 Service 类型的 Unit 才有这个区块。它的主要字段分为服务生命周期和服务上下文配置两个方面。
+服务生命周期控制相关
+Type：定义启动时的进程行为，它有以下几种值：
+Type=simple：默认值，执行ExecStart指定的命令，启动主进程
+Type=oneshot：一次性进程，Systemd 会等当前服务退出，再继续往下执行
+ExecStart：启动当前服务的命令
+ExecStartPre：启动当前服务之前执行的命令
+ExecStartPos：启动当前服务之后执行的命令
+ExecReload：重启当前服务时执行的命令
+ExecStop：停止当前服务时执行的命令
+ExecStopPost：停止当其服务之后执行的命令
+RestartSec：自动重启当前服务间隔的秒数
+Restart：定义何种情况 Systemd 会自动重启当前服务，可能的值包括 always（总是重启）、on-success、on-failure、on-abnormal、on-abort、on-watchdog
+TimeoutStartSec：启动服务时等待的秒数，这一配置对于使用 Docker 容器而言显得尤为重要，因其第一次运行时可能需要下载镜像，严重延时会容易被 Systemd 误判为启动失败杀死。通常，对于这种服务，将此值指定为 0，从而关闭超时检测
+TimeoutStopSec：停止服务时的等待秒数，如果超过这个时间仍然没有停止，Systemd 会使用 SIGKILL 信号强行杀死服务的进程
+
+https://cloud.tencent.com/developer/article/1516125
