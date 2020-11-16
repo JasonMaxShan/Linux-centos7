@@ -1,0 +1,8 @@
+Swarm负载均衡和控制容器自启
+
+rc.local脚本（开机时获得本地IP并启动swarm)
+
+arg=` ifconfig eth0 | grep "inet " | awk '{ print $2 }' `
+ipadd=$arg
+` docker swarm init --advertise-addr $ipadd `
+` docker service create --replicas=3 -p 7777:7777 --name test server `
