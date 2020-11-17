@@ -27,17 +27,18 @@ kill -9 pid
 Systemd
 文件结构示例
 [Unit]
-Description=Hello World
-After=docker.service
-Requires=docker.service
+Description=gameday root service
+After=network.target remote-fs.target
 [Service]
-TimeoutStartSec=0
-ExecStartPre=-/usr/bin/docker kill busybox1
-ExecStartPre=-/usr/bin/docker rm busybox1
-ExecStartPre=/usr/bin/docker pull busybox
-ExecStart=/usr/bin/docker run --name busybox1 busybox /bin/ sh -c "while true; do echo Hello World; sleep 1; done"
-ExecStop="/usr/bin/docker stop busybox1"
-ExecStopPost="/usr/bin/docker rm busybox1"
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/app
+ExecStart=/home/ec2-user/app/ws-aus-day2.bin-711441 -port 8080
+ExecReload=/bin/kill -s -HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+KillMode=process
+Restart=on-failure
+RestartSec=42s
 [Install]
 WantedBy=multi-user.target
 
