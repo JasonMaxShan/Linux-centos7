@@ -22,7 +22,7 @@ kill -9 pid
 危害
 导致系统资源无法正常释放，一般不推荐使用，除非其他办法都无效。
 
--------------------------------------------------------------------------
+————————————————————————————————————————————————————————————————————————————————————————————————————
 
 Systemd
 文件结构示例
@@ -45,7 +45,7 @@ WantedBy=multi-user.target
 如下所示，Systemd 服务的 Unit 文件可以分为三个配置区段：
 Unit 和 Install 段：所有 Unit 文件通用，用于配置服务（或其它系统资源）的描述、依赖和随系统启动的方式
 Service 段：服务（Service）类型的 Unit 文件（后缀为 .service）特有的，用于定义服务的具体管理和操作方法
-
+————————————————————————————————————————————————————————————————————————————————————————————————————
 Unit 段
 Description：描述这个 Unit 文件的信息
 Documentation：指定服务的文档，可以是一个或多个文档的 URL 路径
@@ -77,3 +77,11 @@ TimeoutStartSec：启动服务时等待的秒数，这一配置对于使用 Dock
 TimeoutStopSec：停止服务时的等待秒数，如果超过这个时间仍然没有停止，Systemd 会使用 SIGKILL 信号强行杀死服务的进程
 
 https://cloud.tencent.com/developer/article/1516125
+——————————————————————————————————————————————————————————————————————————————————————————————————
+Systemd 默认从目录/etc/systemd/system/读取配置文件。但是，里面存放的大部分文件都是符号链接，指向目录/usr/lib/systemd/system/，真正的配置文件存放在那个目录
+systemctl enable命令用于在上面两个目录之间，建立符号链接关系
+systemctl list-unit-files命令用于列出所有配置文件状态
+从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的systemctl status命令。
+一旦修改配置文件，就要让 SystemD 重新加载配置文件，然后重新启动，否则修改不会生效。
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart httpd.service
