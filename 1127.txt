@@ -1,0 +1,128 @@
+SSM出站443端口
+必须实例启动时候就赋权
+私网实例连接NAT才可访问SSM
+lambda SQS SNS Dynamodb S3 
+boto3 dynamodb 
+put 覆盖
+update 按需更新
+https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/index.html
+
+(尝试）容器访问S3 创建.aws文件夹config credientials
+
+S3vpce策略
+{
+   "Version": "2012-10-17",
+   "Id": "Policy1415115909152",
+   "Statement": [
+     {
+       "Sid": "Access-to-specific-VPCE-only",
+       "Principal": "*",
+       "Action": "s3:*",
+       "Effect": "Deny",
+       "Resource": ["arn:aws-cn:s3:::awsexamplebucket1/*"],
+       "Condition": {
+         "StringNotEquals": {
+           "aws:SourceVpce": "vpce-0d9f1c9570e8efaa2"
+         }
+       }
+     }
+   ]
+}
+
+
+
+
+一、S3 & 终端节点
+
+二、API Gateway
+1.REST API
+2.HTTP API
+3.触发Lambda  （HTTP API v1 v2）
+
+三、ECR 两种登录方式
+
+四、引导程序
+1.分别启动彩蛋和server
+引导程序
+.refund.sh &
+ sever binary
+
+
+1.创建只能通过VPC内访问S3
+2.ECR两种登录方式
+3.引导程序编写
+4.私有REST API搭建，并触发Lambda接收，打印Method和body
+5.HTTP API搭建，
+（1）v1触发Lambda接收，打印Method和body
+（2）v2触发Lambda接收，打印Method和body
+
+
+
+500lambda代码问题
+502网关ELB目标组问题
+503负载过大
+504服务，容器有问题
+别在EC2里开容器
+
+
+AKSK和IAM role同时存在时AKSK优先生效
+
+#Lambda获取触发器
+for rec in event["Records"]:
+        if rec["eventName"] == "MODIFY":
+            old_img = rec["dynamodb"]["OldImage"]
+            new_img = rec["dynamodb"]["NewImage"]
+            print(old_img)
+            print(new_img)
+
+
+#client方法获取dynamoDB   get_item
+client = boto3.client('dynamodb')
+response = client.get_item(
+        Key={
+            'id': {
+                'S': '1',
+            }
+        },
+        TableName='user1',
+    )
+    item = response["Item"]
+    print(item)
+
+
+#put_item   没有就插入，有的话就覆盖
+    response = client.put_item(
+        Item={
+            'id': {
+                'S': '2',
+            },
+            'name': {
+                'S': 'cstor',
+            }
+        },
+        ReturnConsumedCapacity='TOTAL',
+        TableName='user1',
+    )
+    print(response)
+
+
+####update_item     没有就插入，有就只更新部分
+client = boto3.client('dynamodb')
+
+def lambda_handler(event, context):
+    # TODO implement
+    response = client.update_item(
+        TableName='user1',
+        Key={
+            'id': {
+                'S': '3'
+            }
+        },
+        AttributeUpdates={
+            'name': {
+                'Value': {
+                    'S': 'beijing',
+                }
+            }
+        }
+    )

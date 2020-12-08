@@ -1,0 +1,3 @@
+https://aws-dataengineering-day.workshop.aws/
+https://amazon-rds-purpose-built.workshop.aws/en/lab3/query.html
+https://aws-glue-hands-on-labs.workshop.aws/

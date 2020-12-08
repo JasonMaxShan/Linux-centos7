@@ -1,0 +1,74 @@
+Cloudfront
+默认只有GET HEAD
+需要配POST
+
+ 子网建立三个
+公网
+应用子网
+数据子网
+
+通常对外公开80 443
+安全组嵌套
+
+不同组件创建时间不同
+要安排创建的顺序
+
+memcache多节点高可用
+RDS实现主备
+
+AS最低建议2个及以上实现高可用
+
+
+ALB路径精确匹配和贪婪匹配
+
+应用程序 0-1024需要最高权限，启动80不安全
+不要用root用户启动app
+超过1024且不被占用的端口最佳
+
+Userdata和rc.local都可以
+
+t2.micro 最大策略建议100台
+	最小建议2台
+
+
+备份、加密和日志尽可能勾选
+
+K8S pipeline
+python
+go
+terraform
+
+认证
+AWS认证
+RH认证 红帽认证
+
+cloudformation
+systemd
+tmux
+
+epel
+
+部署服务时
+首先运行sudo yum update
+
+cloud-init
+
+lsof
+日志不能断
+tcpdump port 8080
+
+IAM版本不同不一定通用（2010版2012版）8
+
+aws --region us-west-2 kms decrypt --ciphertext-blob fileb:///data/youfoundme --encryption-context UserName=SecurityJam@AWS --output text --query Plaintext | base64 --decode
+
+
+API GATEWAY可以做身份认证
+
+
+aws ec2 import-key-pair --key-name "demo_key" --public-key-material file://~/.ssh/id_rsa.pub
+Table-test-2
+
+557365724e616d653d53656375726974794a616d40415753
+aws kms decrypt --encryption-context 557365724e616d653d53656375726974794a616d40415753 --output text --query Plaintext | base64 --decode
+ aws kms decrypt --ciphertext-blob fileb:///var/www/html/text --output text --query Plaintext | base64 --decode
+sudo mount /dev/xvdf

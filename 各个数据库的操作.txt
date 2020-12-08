@@ -1,0 +1,59 @@
+MariaDB/MySql
+mysql -h <endpoint> -P 3306 -u <mymasteruser> -p
+使用 SSL 加密的数据库实例
+1.下载适用于所有 AWS 区域的根证书。
+有关下载证书的信息，请参阅https://docs.aws.amazon.com/zh_cn/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
+2.在命令提示符处输入以下命令，以便使用 mysql 实用程序连接到使用 SSL 加密的数据库实例。将参数 -h 替换为数据库实例的 DNS 名称。将参数 --ssl-ca 替换为相应的 SSL 证书文件名。
+mysql -h mariadb-instance1.123456789012.us-east-1.rds.amazonaws.com --ssl-ca=rds-ca-2015-root.pem -p
+3.包括 --ssl-verify-server-cert 参数以使 SSL 连接根据 SSL 证书中的终端节点验证数据库实例终端节点。例如：
+mysql -h mariadb-instance1.123456789012.us-east-1.rds.amazonaws.com --ssl-ca=rds-ca-2015-root.pem --ssl-verify-server-cert -p
+
+创建数据表
+
+CREATE TABLE IF NOT EXISTS `kv`(
+ `mykey` VARCHAR(100) NOT NULL,
+   `myvalue` VARCHAR(40) NOT NULL
+)DEFAULT CHARSET 'UTF8';
+增删改查
+https://blog.csdn.net/qq_27648991/article/details/80412395?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.channel_param
+——————————————————————————————————————————————————————————
+PostgreSQL
+EC2上安装psql
+$ amazon-linux-extras list 显示可运行的软件
+ ...
+ postgresql11             available    [ =11  =stable ]
+ ...
+
+$ sudo amazon-linux-extras enable postgresql11 启动软件
+ ...
+ 41  postgresql11=latest      enabled      [ =11  =stable ]
+ 42  php7.4                   available    [ =stable ]
+
+Now you can install:
+ # yum clean metadata
+ # yum install postgresql
+ ...
+然后一次安装所有需要的组件
+ ...
+$ sudo yum install postgresql postgresql-server postgresql-devel postgresql-contrib postgresql-docs 
+ ...
+使用 psql 连接到 PostgreSQL 数据库实例
+psql --host=unicorndb.cgmjbhqud2tx.us-west-2.rds.amazonaws.com --port=5432 --username=unicorndb --password --dbname=unicorndb 
+
+增删改查
+https://blog.csdn.net/two_ye/article/details/95589990?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-4.channel_param
+——————————————————————————————————————————————————————————
+Amazon DocumentDB
+安装 mongo shell
+1.echo -e "[mongodb-org-3.6] \nname=MongoDB Repository\nbaseurl=https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/3.6/x86_64/\ngpgcheck=1 \nenabled=1 \ngpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc" | sudo tee /etc/yum.repos.d/mongodb-org-3.6.repo
+2.sudo yum install -y mongodb-org-shell
+连接实例
+在 连接性和安全性 选项卡，下方 使用MongoShell连接到此群集，复制提供的连接字符串。忽略复制 <insertYourPassword> 当您连接时，MongoShell会提示您输入密码
+查询
+https://docs.aws.amazon.com/zh_cn/documentdb/latest/developerguide/querying.html
+
+增删改查
+https://www.cnblogs.com/ywjfx/p/10129007.html
+——————————————————————————————————————————————————————————
+DynamoDB
+https://docs.aws.amazon.com/zh_cn/amazondynamodb/latest/developerguide/GettingStartedDynamoDB.html

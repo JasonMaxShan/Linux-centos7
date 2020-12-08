@@ -1,0 +1,59 @@
+import json
+import boto3
+table_name="test"
+
+def get_itemnums():
+    ###获取item总数
+    client = boto3.client('dynamodb')
+    response = client.scan(
+        TableName=table_name
+        )
+    return response['Count']
+
+def get_item(n):
+    ###获取item
+    key=str(n)
+    client = boto3.client('dynamodb')
+    response = client.get_item(
+        TableName=table_name,
+        Key={ 'id':
+            {
+            'S':key
+            }
+        }
+    )
+    return response['Item']
+
+def update_item(n):
+    ###更新添加item
+    client = boto3.client('dynamodb')
+    key=str(n)
+    response = client.update_item(
+        TableName=table_name,
+        Key={
+            'id': {
+                'S': key
+            }
+        },
+        AttributeUpdates={
+            'name': {
+                'Value': {
+                    'S': 'beijing',
+                }
+            }
+        }
+    )
+    return response
+
+def lambda_handler(event, context):
+    # TODO implement
+    
+    nums=get_itemnums()
+    for n in range(1,nums+1):
+        response=get_item(n)
+        print(response)
+    update_item(5)
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!')
+    }
