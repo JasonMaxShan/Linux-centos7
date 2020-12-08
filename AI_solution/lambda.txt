@@ -1,0 +1,62 @@
+import sys
+import boto3
+from botocore.exceptions import ClientError
+import json
+import pymysql
+import os
+
+table_name = os.environ['TB_NAME']  
+db_name = os.environ['RDS_DB_NAME']
+user = os.environ['username']
+pwd = os.environ['password']
+host = os.environ['host']
+
+
+def lambda_handler(event, context):
+    #SQS
+    
+    body=event['Records'][0]['body']
+    messageAttributes=event['Records'][0]['messageAttributes']
+    mykey=messageAttributes['mykey']['stringValue']
+    myvalue=messageAttributes['myvalue']['stringValue']
+    print(body)
+    print(messageAttributes)
+    
+    
+    
+    #数据库操作
+    content = {}
+    
+    # 连接数据库
+    db = pymysql.connect(host, user, pwd, db_name)
+    cursor = db.cursor()
+    # 数据库语句
+    sql = 'INSERT INTO kv(mykey,myvalue) VALUES(%s,%s)'
+    args = (mykey,myvalue)
+    cursor.execute(sql, args=args)
+    db.commit()
+    sql_2 = "SELECT * FROM "+table_name
+    try:
+        # 执行SQL语句
+        cursor.execute(sql_2)
+        # 获取所有记录列表
+        results = cursor.fetchall()
+    except:
+        print("Error: unable to fetch data")
+    for item in results:
+        kv = list(item)
+        content.update({kv[0]: kv[1]})
+
+        # 关闭数据库连接
+    db.close()
+    print(content)
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Hello from Lambda!'),
+        'db': db_name,
+        'table_name': table_name,
+        'content': json.dumps(content)
+
+
+    }
+    
