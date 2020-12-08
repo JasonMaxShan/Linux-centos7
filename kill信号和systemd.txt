@@ -78,7 +78,8 @@ TimeoutStopSec：停止服务时的等待秒数，如果超过这个时间仍然
 
 https://cloud.tencent.com/developer/article/1516125
 ——————————————————————————————————————————————————————————————————————————————————————————————————
-Systemd 默认从目录/etc/systemd/system/读取配置文件。但是，里面存放的大部分文件都是符号链接，指向目录/usr/lib/systemd/system/，真正的配置文件存放在那个目录
+/etc/systemd/system/读取配置文件地址
+/usr/lib/systemd/system/，真正的配置文件存放在那个目录
 systemctl enable命令用于在上面两个目录之间，建立符号链接关系
 systemctl list-unit-files命令用于列出所有配置文件状态
 从配置文件的状态无法看出，该 Unit 是否正在运行。这必须执行前面提到的systemctl status命令。
