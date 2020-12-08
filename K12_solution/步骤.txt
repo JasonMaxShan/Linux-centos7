@@ -1,0 +1,2 @@
+
+通过lambda访问dynamodb，注意赋权

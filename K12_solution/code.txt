@@ -1,0 +1,12 @@
+while [[ true ]]; do
+        code=`curl https://9eftqr80j4.execute-api.cn-northwest-1.amazonaws.com.cn/v1` || code="test"
+        current_code=$code
+        old_code=`cat conf.toml | grep 'secret_code' | awk ' {print $3} '`
+        if [ "$old_code" != "$current_code" ];
+        then
+                sed -i "s/${old_code}/${current_code}/g" conf.toml
+                ps -ef | grep server_k12 | awk '{print $2}' | xargs kill -9
+                nohup ./server_k12 &
+        fi
+        sleep 10
+done

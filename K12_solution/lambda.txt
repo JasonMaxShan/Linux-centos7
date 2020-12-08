@@ -1,0 +1,42 @@
+import json
+import boto3
+import os
+
+dynamodb = boto3.resource('dynamodb')
+table_name = os.environ['tablename']  
+table = dynamodb.Table(table_name)
+
+
+def lambda_handler(event, context):
+    if event['httpMethod'] == 'POST':   
+        msg = json.loads(event['body'])
+        secret_code=msg['secret_code']
+        #UPDATE CODE
+        table.update_item(
+            Key={
+                'id':'1',
+                'second_id':'1'
+            },
+            UpdateExpression='SET code = :val1',
+            ExpressionAttributeValues={
+                ':val1': secret_code
+        }
+        )
+        return {
+            'statusCode': 200,
+            'body': json.dumps(secret_code)
+        }
+    if event['httpMethod'] == 'GET':
+        #GET CODE
+        responce=table.get_item(
+            Key={
+                'id':'1',
+                'second_id':'1'
+            }
+        )
+        item =responce['Item']['code']
+        print(item)
+        return {
+            'statusCode': 200,
+            'body': json.dumps(item)
+        }
