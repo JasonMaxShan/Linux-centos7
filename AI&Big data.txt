@@ -1,3 +1,9 @@
 https://aws-dataengineering-day.workshop.aws/
 https://amazon-rds-purpose-built.workshop.aws/en/lab3/query.html
 https://aws-glue-hands-on-labs.workshop.aws/
+https://ec2spotworkshops.com/
+https://sagemaker-immersionday.workshop.aws/
+https://media-analysis-evolved.workshop.aws/en/
+https://rekognition-immersionday.workshop.aws/
+https://aws-dataengineering-day.workshop.aws/
+https://lakeformation.workshop.aws/
