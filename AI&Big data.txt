@@ -7,3 +7,4 @@ https://media-analysis-evolved.workshop.aws/en/
 https://rekognition-immersionday.workshop.aws/
 https://aws-dataengineering-day.workshop.aws/
 https://lakeformation.workshop.aws/
+https://docs.aws.amazon.com/zh_cn/emr/latest/ReleaseGuide/emr-hbase.html
