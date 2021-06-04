@@ -9,7 +9,6 @@ mysql -h mariadb-instance1.123456789012.us-east-1.rds.amazonaws.com --ssl-ca=rds
 mysql -h mariadb-instance1.123456789012.us-east-1.rds.amazonaws.com --ssl-ca=rds-ca-2015-root.pem --ssl-verify-server-cert -p
 
 创建数据表
-
 CREATE TABLE IF NOT EXISTS `kv`(
  `mykey` VARCHAR(100) NOT NULL,
    `myvalue` VARCHAR(40) NOT NULL
@@ -45,8 +44,10 @@ https://blog.csdn.net/two_ye/article/details/95589990?utm_medium=distribute.pc_r
 ——————————————————————————————————————————————————————————
 Amazon DocumentDB
 安装 mongo shell
+https://docs.aws.amazon.com/zh_cn/documentdb/latest/developerguide/get-started-guide.html#cloud9-mongoshell
 1.echo -e "[mongodb-org-3.6] \nname=MongoDB Repository\nbaseurl=https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/3.6/x86_64/\ngpgcheck=1 \nenabled=1 \ngpgkey=https://www.mongodb.org/static/pgp/server-3.6.asc" | sudo tee /etc/yum.repos.d/mongodb-org-3.6.repo
 2.sudo yum install -y mongodb-org-shell
+
 连接实例
 在 连接性和安全性 选项卡，下方 使用MongoShell连接到此群集，复制提供的连接字符串。忽略复制 <insertYourPassword> 当您连接时，MongoShell会提示您输入密码
 查询
